@@ -1,0 +1,32 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"saveAndRun": {
+			"commands": [
+			  {
+				"match": ".*",
+				"cmd": "echo 'Run on Save reporting!'",
+				"useShortcut": false,
+				"silent": true,
+			  },
+			  {
+				"match": ".py",
+				"cmd": "python3 ${file}",
+				"useShortcut": false,
+				"silent": false
+			  },
+			  {
+				"match": "\\.txt$",
+				"cmd": "echo 'I am a .txt file ${file}.'",
+				"useShortcut": false,
+				"silent": true
+			  }
+			]
+		  },
+		  "editor.detectIndentation": false
+	}
+}
