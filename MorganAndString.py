@@ -11,12 +11,16 @@ def morganAndString(a, b):
         # This is to count for edge cases like: a = AZZ, b = AZZA
         tempA = a + "Z" * (len(b) - len(a)) if len(a) < len(b) else a
         tempB = b + "Z" * (len(a) - len(b)) if len(b) < len(a) else b        
-        if tempA <= tempB:                        
-            result += a[0]
-            a = a[1:]
-        else: # b < a            
-            result += b[0]
-            b = b[1:]
+        if tempA <= tempB:
+            c = a[0]
+            while a[0] == c and len(a) > 1:                
+                result += c
+                a = a[1:]
+        else: # b < a
+            c = b[0]
+            while b[0] == c and len(b) > 1:                
+                result += c
+                b = b[1:]
         
 
 if __name__ == "__main__":
