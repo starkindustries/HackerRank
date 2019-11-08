@@ -1,43 +1,26 @@
 
-"""
-# Recursive approach. It works but returns runtime error:
-# maximum recursion depth exceeded
-def morganAndString(a, b):        
-    if a <= b:
-        if len(a) == 1:
-            return a[0] + b
-        else:
-            return a[0] + morganAndString(a[1:], b)
-    elif b < a:
-        if len(b) == 1:
-            return b[0] + a
-        else:
-            return b[0] + morganAndString(a, b[1:])    
-"""
-
 def morganAndString(a, b):
     result = ""
-    while True:        
-        """
-        if a[0] == "Z" or b[0] == "Z":
-            print("Z!")
-            print(f"a: {a[:30]}..")
-            print(f"b: {b[:30]}..")            
-        """
-        if a <= b:
-            if len(a) == 1:
+    while True:           
+        if len(a) == 1 or len(b) == 1:
+            if (result + a + b) < (result + b + a):
                 return result + a + b
+            else:
+                return result + b + a
+        # Make the two strings the same length by filling the smaller string with trailing 'Z's
+        # This is to count for edge cases like: a = AZZ, b = AZZA
+        tempA = a + "Z" * (len(b) - len(a)) if len(a) < len(b) else a
+        tempB = b + "Z" * (len(a) - len(b)) if len(b) < len(a) else b        
+        if tempA <= tempB:                        
             result += a[0]
             a = a[1:]
-        else: # b < a
-            if len(b) == 1:
-                return result + b + a
+        else: # b < a            
             result += b[0]
             b = b[1:]
         
 
 if __name__ == "__main__":
-    fileName = "./MorganAndString4.txt"
+    fileName = "./MorganAndString7.txt"
     lines = []
     with open(fileName, 'r') as file_handle:
         for line in file_handle:        
@@ -52,12 +35,13 @@ if __name__ == "__main__":
             print("SUCCESS!")
         else:
             print("FAIL")
-            # print(f"R, E: {result} {expected }")
+            print(f"a, b: {a} {b}")
+            print(f"R, E: {result} {expected }")
             printLimit = 100
             j = 0
             while j < len(result) or j < len(expected):
                 if not result[j] == expected[j]:
-                    print(f"diff: {j-1} {result[j-1]} {expected[j-1]}")
+                    print(f"diff: {j} {result[j]} {expected[j]}")
                     printLimit -= 1
                     if printLimit < 0:
                         break
