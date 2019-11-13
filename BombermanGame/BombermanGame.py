@@ -23,59 +23,63 @@ def bomberman(n, grid):
     if n == 1:    
         return grid
 
+    # if seconds is even, return the all bombs grid
     height, width = len(grid), len(grid[0])
+    allBombsGrid = ["O" * width] * height
+    if n % 2 == 0:
+        return allBombsGrid    
     
+    # If we made it this far, we need to detonate some bombs
     # store bomb states with key: value of state: order
-    bombStates = {}
-        
-    lastState = None    
-    for i in range(2, n + 1):     
-        # 2 seconds, fill bombs
-        if i % 2 == 0:            
-            bombs = ["O" * width] * height
-            lastState = bombs
-            continue           
-        else: # 3 seconds, detonate bombs     
-            firstDet = [row for row in bombs]
-            for row in range(height):
-                for col in range(width):
-                    if grid[row][col] == "O":
-                        # explode locations to left and right
-                        x1 = (col - 1) if col > 0 else col
-                        x2 = (col + 1) if col < (width - 1) else col
-                        firstDet[row] = firstDet[row][:x1] + ("." * (x2-x1+1)) + firstDet[row][x2 + 1:]
-                        # explode locations above and below
-                        if row > 0:
-                            firstDet[row - 1] = firstDet[row - 1][:col] + "." + firstDet[row-1][col+1:]
-                        if row < (height - 1):
-                            firstDet[row + 1] = firstDet[row + 1][:col] + "." + firstDet[row + 1][col+1:]            
-            lastState = firstDet
-            grid = [x for x in firstDet]
-        # Now repeat
-    return lastState
-
+    bombStateIndex = 0
+    bombStateRepeatedIndex = None
+    bombStates = { " ".join(grid) : bombStateIndex }    
+    
+    lastState = [row for row in grid]        
+    for i in range(3, n + 1, 2):
+        detonatedGrid = [row for row in allBombsGrid]
+        for row in range(height):
+            for col in range(width):
+                if lastState[row][col] == "O":
+                    # explode locations to left and right
+                    x1 = (col - 1) if col > 0 else col
+                    x2 = (col + 1) if col < (width - 1) else col
+                    detonatedGrid[row] = detonatedGrid[row][:x1] + ("." * (x2-x1+1)) + detonatedGrid[row][x2 + 1:]
+                    # explode locations above and below
+                    if row > 0:
+                        detonatedGrid[row - 1] = detonatedGrid[row - 1][:col] + "." + detonatedGrid[row-1][col+1:]
+                    if row < (height - 1):
+                        detonatedGrid[row + 1] = detonatedGrid[row + 1][:col] + "." + detonatedGrid[row + 1][col+1:]                    
+        detGridString = " ".join(detonatedGrid)
+        if detGridString in bombStates:
+            bombStateRepeatedTime = i
+            bombStateRepeatedIndex = bombStates[detGridString]
+            break
+        else:
+            bombStateIndex += 1
+            bombStates[detGridString] = bombStateIndex                
+        lastState = [x for x in detonatedGrid]
+        # Now repeat    
+    
+    if not bombStateRepeatedIndex is None:
+        # Assume that there can only be a pair of two repeated states
+        # print(f"max index: {bombStateIndex}, repeated at: {bombStateRepeatedIndex}, time: {bombStateRepeatedTime}")
+        # n % 4 == 1 is determined by looking at the sequence
+        # if 7s: return grid 1. if 9s return grid 2
+        # if 11s: 1. if 13s: 2.
+        # if 15s: 1. if 17s: 2. Note that all grid 2's have 'n' % 4 == 1.
+        if n % 4 == 1:
+            for gridString, index in bombStates.items():
+                if index == 2:
+                    return [line for line in gridString.split()]
+        else:
+            for gridString, index in bombStates.items():
+                if index == 1:
+                    return [line for line in gridString.split()]                    
+    else:    
+        return lastState
 
 # main
-# inputString = """
-# 6 7 5
-# .......
-# ...O.O.
-# ....O..
-# ..O....
-# OO...OO
-# OO.O...
-# """
-# expectedString = """
-# .......
-# ...O.O.
-# ...OO..
-# ..OOOO.
-# OOOOOOO
-# OOOOOOO
-# """
-# lines = [line.strip() for line in inputString.splitlines() if not line.strip() == ""]
-# expectedGrid = [line.strip() for line in expectedString.splitlines() if not line.strip() == ""]
-
 # Input file
 fileName = "./BombermanTestInput.txt"
 lines = []
