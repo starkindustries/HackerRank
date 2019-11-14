@@ -1,48 +1,37 @@
 #!/bin/python3
 
-def printGrid(grid):
-    print("\nGRID:")
-    for row in grid:
-        print(row)
-
-# For plus length of 1, is a G exists func returns True
-# For plus len > 1, func returns [row][col] coords of plus center
 def searchGridForPlus(grid, plusLength):    
+    # check edge cases where plus length is greater than the grid
     if len(grid) < plusLength:
         return None
     if len(grid[0]) < plusLength:
         return None
-    print(f"search {plusLength}")
+
+    # For plus length of 1, if 'G' exists return True        
     if plusLength == 1:
         for row in grid:
             if "G" in row:
-                return True            
+                return True
 
+    # For plus len > 1, return [row][col] coords of plus's center
     horizontalSegments = []
     # first check all horizontal segments of plusLen
     # spokeLen is one spoke on the plus, not including center
     spokeLen = plusLength // 2
     for row in range(spokeLen, len(grid) - spokeLen):
-        for col in range(len(grid[0]) - spokeLen + 1):
-            if grid[row][col] == "G":
-                # check substring of length plusLength
-                segment = grid[row][col:col+plusLength]
-                print(f"segment1: {segment}")
-                if segment == ("G" * plusLength):
-                    horizontalSegments.append([row, col+(plusLength//2)])
+        for col in range(len(grid[0]) - spokeLen + 1):            
+            # check substring of length plusLength
+            segment = grid[row][col:col+plusLength]                
+            if segment == ("G" * plusLength):
+                horizontalSegments.append([row, col+(plusLength//2)])
     # then check the vertical portions of the horizontal segments
     validPluses = []
-    for segment in horizontalSegments:
-        print(f"segment2: {segment}")
+    for segment in horizontalSegments:        
         isValidPlus = True
-        for i in range(1, spokeLen + 1):
-            print(f"segment3: {segment} {grid[segment[0] + i][segment[1]]} {grid[segment[0] - i][segment[1]]}")
-            if not grid[segment[0] + i][segment[1]] == "G":
+        for i in range(1, spokeLen + 1):            
+            if (grid[segment[0] + i][segment[1]] != "G") or (grid[segment[0] - i][segment[1]] != "G"):
                 isValidPlus = False
-                break
-            if not grid[segment[0] - i][segment[1]] == "G":
-                isValidPlus = False
-                break
+                break            
         if isValidPlus:
             validPluses.append(segment)
     return validPluses
@@ -60,8 +49,6 @@ def placePlusInGrid(grid, plus, symbol):
     coords.extend([[plusOrigin[0], y] for y in range(plusOrigin[1]-spokeLength, plusOrigin[1]+spokeLength+1)])
     # Center is duplicated so remove one copy
     coords.remove([plusOrigin[0], plusOrigin[1]])
-    print(f"PLUS: {plus}")
-    print(f"COORDS: {coords}")
     for coord in coords:
         row, col = coord[0], coord[1]
         if not grid[row][col] == "G":
@@ -86,20 +73,15 @@ def twoPluses(grid):
     # From this point, I have all possible plus coordinates
     # Now determine largest two valid pluses    
     maxArea = 1 if searchGridForPlus(grid, 1) else 0
-    # Loop through largest pluses and place them in grid        
-    print(f"VALID pluses: {plusLength} {validPluses}")
+    # Loop through all pluses and place them in grid one at a time
     for plus1 in validPluses:
         onePlusGrid = placePlusInGrid([row for row in grid], plus1, 1)
-        if onePlusGrid == False:
-            print("WARNING: this should not happen..")
-            printGrid(grid)
-            print(f"{plus1}")
-        # now try placing all other pluses        
+        # now try placing all other pluses
         for plus2 in validPluses: 
             twoPlusGrid = placePlusInGrid([row for row in onePlusGrid], plus2, 2)
             if twoPlusGrid == False:
                 continue
-            # now multiple their areas
+            # If plus successfully placed, multiply their areas
             area = (plus1[1] * 2 - 1) * (plus2[1] * 2 - 1)            
             maxArea = area if area > maxArea else maxArea
         # try placeing a plus of size 1        
@@ -109,20 +91,27 @@ def twoPluses(grid):
     return maxArea
 
 if __name__ == '__main__':
-    inputString = """
-    8 9
-    GGGGGGGGG
-    GBBBGGBGG
-    GBBBGGBGG
-    GBBBGGBGG
-    GBBBGGBGG
-    GBBBGGBGG
-    GBBBGGBGG
-    GGGGGGGGG
-    """
-    print(inputString)
-    lines = [line.strip() for line in inputString.splitlines() if not line.strip() == ""]
-    nm = [int(x) for x in lines.pop(0).split()]
-    grid = lines
-    result = twoPluses(grid)
-    print(f"Result: {result}")
+    # Get input from test file
+    fileName = "./EmaTestFile.txt"
+    lines = []
+    with open(fileName, 'r') as file_handle:
+        for line in file_handle:        
+            lines.append(line.strip())
+    numTests = int(lines.pop(0).strip())
+
+    # Loop through all test cases
+    for _ in range(numTests):
+        # first line is height width
+        height = int(lines.pop(0)[0])
+        grid = []
+        for _ in range(height):
+            grid.append(lines.pop(0))
+        result = twoPluses(grid)
+        expectedOutput = int(lines.pop(0))
+        if expectedOutput == result:
+            print(f"SUCCESS: {result}")
+        else:
+            print(f"TEST FAILED: {result} {expectedOutput}\n")            
+            for row in grid:
+                print(row)
+            print("\n")
