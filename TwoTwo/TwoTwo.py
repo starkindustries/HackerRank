@@ -4,6 +4,8 @@ TESTCASE1 = True
 
 powersTwoMap = {}
 lastTwoDigits = {}
+lastThreeDigits = {}
+lastFourDigits = {}
 def buildPowersMap():
     # build powersTwoMap
     x = 800
@@ -13,11 +15,13 @@ def buildPowersMap():
         powersTwoMap[temp] = i
         # print(f"{str(temp)[:50]} {i} {len(str(temp))}")
 
-    # build lastTwoDigits map
+    # build maps
     for value, _ in powersTwoMap.items():
-        # print(f"{str(value)[-2:]} {power}")
-        if value % 100 > 9:
-            lastTwoDigits[value % 100] = True
+        # print(f"{str(value)[-2:]} {power}")        
+        lastTwoDigits[value % 100] = True
+        lastThreeDigits[value % 1000] = True
+        lastFourDigits[value % 10000] = True
+    # print(lastFourDigits)    
 
 # https://www.hackerrank.com/challenges/two-two/problem
 def strength(subString):
@@ -39,8 +43,12 @@ def twotwo(a):
         for groupLength in range(1, maxGroupLength):
             if groupLength > 1 and int(a[i - 1: i + 1]) not in lastTwoDigits:
                 break
+            if groupLength > 2 and int(a[i - 2: i + 1]) not in lastThreeDigits:
+                break
+            if groupLength > 3 and int(a[i - 3: i + 1]) not in lastFourDigits:
+                break
             group = a[i - groupLength + 1: i + 1]
-            # print(f"group: {group} {groupLength} {i}")
+            # print(f"group: ..{group[-50:]} {groupLength} {i}")
             if isPowerOfTwo(strength(group)):                
                 twoCount += 1
     return twoCount
