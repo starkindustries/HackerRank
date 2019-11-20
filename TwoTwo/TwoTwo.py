@@ -1,6 +1,7 @@
 import timeit
 import json
 
+DEBUG = False
 TESTNUMBER = 1
 
 class Trie:
@@ -38,28 +39,27 @@ def buildPowersMap():
     temp = 1
     powersTrie.add(str(temp))
     for i in range(1, x + 1):
-        temp *= 2    
+        temp *= 2
         powersTrie.add(str(temp))
-        # print(f"{str(temp)[:50]} {i} {len(str(temp))}")
+        if DEBUG:
+            print(f"{str(temp)[:50]}.. {i} {len(str(temp))}")
     # print(json.dumps(powersTrie.root, sort_keys=True, indent=1))
-        
-def countInTrie(node, word):
-    count = 0
-    current = node
-    for char in word:
-        if not char in current:
-            return count
-        current = current[char]
-        if "*" in current:
-            count += 1
-    return count
 
 # https://www.hackerrank.com/challenges/two-two/problem
 # Output the total number of strengths of the form 2^x such that 0 <= x <= 800.
 def twotwo(a):
-    count = 0
+    count = 0    
     for i in range(len(a)):
-        count += countInTrie(powersTrie.root, a[i:])
+        current = powersTrie.root
+        substring = a[i:]               
+        for char in substring:            
+            # if DEBUG:
+            #     print(f"{char} {substring}")
+            if not char in current:
+                break
+            current = current[char]
+            if "*" in current:
+                count += 1           
     return count
     
 # main
@@ -72,7 +72,7 @@ if TESTNUMBER == 0:
         ("65536", 1),
         ("023223", 4),
         ("33579", 0),
-        ("2121212121212121", 16)
+        ("2121212121212121024", 19)
     ]
 
 if TESTNUMBER > 0:
