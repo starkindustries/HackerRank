@@ -1,34 +1,66 @@
-import math 
+import timeit
+import json
 
 TESTNUMBER = 1
 
-powersTwoMap = { 1 : 0 }
+class Trie:
+    root = {} # character : node
+
+    def __repr__(self):
+        return f"{(self.root)}"
+
+    def __str__(self):
+        return f"{(self.root)}"
+
+    def add(self, word):    
+        current = self.root
+        for char in word:
+            if char not in current:
+                current[char] = {}
+            current = current[char]
+        current["*"] = True
+
+    def search(self, word):
+        current = self.root
+        for char in word:
+            if char not in current:
+                return False
+            current = current[char]
+        if '*' in current:
+            return True
+        else:
+            return False
+
+powersTrie = Trie()
 def buildPowersMap():
     # build powersTwoMap
     x = 800
     temp = 1
+    powersTrie.add(str(temp))
     for i in range(1, x + 1):
         temp *= 2    
-        powersTwoMap[temp] = i
+        powersTrie.add(str(temp))
         # print(f"{str(temp)[:50]} {i} {len(str(temp))}")
+    # print(json.dumps(powersTrie.root, sort_keys=True, indent=1))
+        
+def countInTrie(node, word):
+    count = 0
+    current = node
+    for char in word:
+        if not char in current:
+            return count
+        current = current[char]
+        if "*" in current:
+            count += 1
+    return count
 
 # https://www.hackerrank.com/challenges/two-two/problem
-def strength(subString):
-    if int(subString[0]) == 0:
-        return 0
-    return int(subString)
-
-def isPowerOfTwo(n):    
-    return (n in powersTwoMap)
-
 # Output the total number of strengths of the form 2^x such that 0 <= x <= 800.
-maxLen = 241
 def twotwo(a):
-    twoCount = 0
-    for value in powersTwoMap.keys():
-        if str(value) in a:
-            twoCount += a.count(str(value))
-    return twoCount
+    count = 0
+    for i in range(len(a)):
+        count += countInTrie(powersTrie.root, a[i:])
+    return count
     
 # main
 testCases = []
@@ -40,7 +72,7 @@ if TESTNUMBER == 0:
         ("65536", 1),
         ("023223", 4),
         ("33579", 0),
-        ("2121212121212121", 8)
+        ("2121212121212121", 16)
     ]
 
 if TESTNUMBER > 0:
@@ -57,9 +89,15 @@ if TESTNUMBER > 0:
         testCases.append((lines[i], int(lines[n + i + 1])))
 
 buildPowersMap()
+totalTime = 0
 for t in testCases:
+    start = timeit.default_timer()
     result = twotwo(t[0])
+    stop = timeit.default_timer()
     if result == t[1]:
         print(f"SUCCESS: {result}")
     else: 
         print(f"FAIL: {result}. Expected {t[1]}")
+    totalTime += stop - start
+print(f"avg time: {totalTime / len(testCases)}")
+print(f"total time: {totalTime}")
