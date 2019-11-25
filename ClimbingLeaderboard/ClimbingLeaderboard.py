@@ -1,5 +1,7 @@
 import timeit
 
+# hackerrank.com/challenges/climbing-the-leaderboard
+
 # Complete the climbingLeaderboard function below.
 def climbingLeaderboard(scores, alice):
     scoreMap = {}
