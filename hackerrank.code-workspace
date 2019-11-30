@@ -1,35 +1,43 @@
 {
-  "folders": [
-    {
-      "path": "."
-    }
-  ],
-  "settings": {
-    "python.formatting.autopep8Args": [
-      "--max-line-length=200"
-    ],
-    "saveAndRun": {
-      "commands": [
+    "folders": [
         {
-          "match": ".*",
-          "cmd": "echo 'Run on Save reporting!'",
-          "useShortcut": false,
-          "silent": true,
-        },
-        {
-          "match": ".py",
-          "cmd": "py ${file}",
-          "useShortcut": false,
-          "silent": false
-        },
-        {
-          "match": "\\.txt$",
-          "cmd": "echo 'I am a .txt file ${file}.'",
-          "useShortcut": false,
-          "silent": true
+            "path": "."
         }
-      ]
-    },
-    "editor.detectIndentation": false
-  }
+    ],
+    "settings": {
+        "python.formatting.autopep8Args": [
+            "--max-line-length=200"
+        ],
+        "saveAndRun": {
+            "commands": [
+                {
+                    "match": ".*",
+                    "cmd": "echo 'Run on Save reporting!'",
+                    "useShortcut": false,
+                    "silent": true,
+                },
+                {
+                    "match": ".py",
+                    "cmd": "py ${file}",
+                    "useShortcut": false,
+                    "silent": false
+                },
+                {
+                    "match": "CountTriplets.py",
+                    "cmd": "py CountTriplets.py",
+                    "useShortcut": false,
+                    "silent": false
+                },
+                {
+                    "match": "\\.txt$",
+                    "cmd": "echo 'I am a .txt file ${file}.'",
+                    "useShortcut": false,
+                    "silent": true
+                }
+            ]
+        },
+        "editor.detectIndentation": false,
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true
+    }
 }
