@@ -22,55 +22,6 @@ def theFinalProblem(target):
     return flipCount
 
 
-def fountainActivation(locations):
-    # cover all ranges from 1 to location length
-    # 1-3, 2-5, 4, 5 etc. ranges can overlap
-    rangeMap = {}
-    #rangeList = []
-    for i in range(len(locations)):
-        fountainRange = [max(i+1 - locations[i], 1), min(i+1 + locations[i], len(locations))]
-        #rangeLength = fountainRange[1] - fountainRange[0]
-        if fountainRange[0] in rangeMap:
-            rangeMap[fountainRange[0]].append(fountainRange[1])
-        else:
-            rangeMap[fountainRange[0]] = [fountainRange[1]]
-
-    # print(rangeMap)
-    count = 0
-    left = 1
-    while left < len(locations):
-        if left in rangeMap:
-            maxRange = max(rangeMap[left])
-            left = maxRange + 1
-            count += 1
-        else:
-            left -= 1
-    return count
-    # store left of range in map as key
-
-    # greedy algorithm
-    # iterate. assign most powerful fountain that covers the most in the range. remove fountain
-    # then for the remaining garden, assign fountains that cover the most range for their sub ranges.
-    # heapq._heapify_max(rangeList)
-    # gardenNeedsWater = [[1, len(locations)]]
-    # while len(gardenNeedsWater) > 0:
-    #     maxRange = heapq._heappop_max(rangeList)
-    #     fountRange = rangeMap[maxRange]
-
-    #     for gardenRange in gardenNeedsWater:
-    #         # does this range cover the needs of the garden?
-    #         if fountRange[0] >= gardenRange[0] and gardenRange[1] <= gardenNeedsWater[1]:
-    #             # yes it does! remove this range from garden
-
-    # return
-    # print(rangeList)
-    # heapq._heapify_max(rangeList)
-    # maxRange = heapq._heappop_max(rangeList)
-    # print(f"maxRange: {maxRange}")
-    # temp = rangeMap[maxRange]
-    # print(f"temp: {temp}")
-
-
 def testDivisor(div, nums, threshold):
     divList = []
     for n in nums:
