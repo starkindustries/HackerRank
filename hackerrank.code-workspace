@@ -20,13 +20,7 @@
                     "match": ".py",
                     "cmd": "py ${file}",
                     "useShortcut": false,
-                    "silent": false
-                },
-                {
-                    "match": "CountTriplets.py",
-                    "cmd": "py CountTriplets.py",
-                    "useShortcut": false,
-                    "silent": false
+                    "silent": false,
                 },
                 {
                     "match": "\\.txt$",
