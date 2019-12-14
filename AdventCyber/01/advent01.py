@@ -41,7 +41,23 @@ def parseKeylog(lines):
     for i in range(len(lines) - phoneNumberDigits):
         time, keycode = lines[i][0], lines[i][1]
         tapTime = time - lastTapTime
-        if keycode > 10:
+        if keycode == 101:
+            # delete last char
+            logging.debug("Keycode 101: Delete character behind cursor")
+            if lastKeycode and lastKeycode <= 10:
+                smsString += convertT9toChar(lastKeycode, keycodeCount)
+                lastKeycode = None
+                keycodeCount = 0
+            smsString = smsString[:-1]
+        elif keycode == 102:
+            # Move cursor back
+            logging.info("Keycode 102: Move cursor backward. Not yet implemented.")
+            pass
+        elif keycode == 103:
+            # Move cursor forward
+            logging.info("Keycode 102: Move cursor forward. Not yet implemented.")
+            pass
+        elif keycode > 10:
             logging.debug(f"keycode: {keycode}")
         elif lastKeycode is None:
             lastKeycode = keycode
@@ -57,10 +73,11 @@ def parseKeylog(lines):
             keycodeCount += 1
         else:
             logging.error(f"ERROR: unexpected keycode condition: {keycode}")
-        logging.debug(f"raw time: {time}, key: {keycode}, time: {time - lastTapTime}, string: {smsString}")
+        logging.debug(f"raw time: {time}, key: {keycode}, time: {tapTime}, string: {smsString}")
         lastTapTime = time
     if keycodeCount > 0:
         smsString += convertT9toChar(keycode, keycodeCount)
+
     return smsString
 
 
