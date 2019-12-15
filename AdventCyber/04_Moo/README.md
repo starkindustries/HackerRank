@@ -1,5 +1,11 @@
-# Moo! 
-## Capture the Flag
+# Moo!
+### Prompt
+> 'Moo may represent an idea, but only the cow knows.' - Mason Cooley 
+```
+Service: http://3.93.128.89:1204
+```
+
+### Solution
 Viewing all the different cows, we find that custom_cow looks interesting because it has more inputs like `$eyes`, `$tongue`, and `$thoughts`. All variables are used in the `custom_cow` text area. Try to use a new variable like `$test` and you'll get an error message:
 
 > $ must be escaped with \ except when using $thoughts, $eyes or $tongue
@@ -90,5 +96,8 @@ _________
 < message >
  ---------
 ```
+
+#### Links
+https://advent2019.overthewire.org/
 
 https://packages.ubuntu.com/source/bionic/cowsay
