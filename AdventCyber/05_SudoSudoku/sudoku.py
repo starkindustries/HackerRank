@@ -3,6 +3,7 @@ import logging
 
 # sudoku
 
+USE_EQUATIONS = False
 logging.basicConfig(level=logging.INFO)
 
 
@@ -69,7 +70,11 @@ class Equation:
                 result += value
             else:
                 logging.debug(f" {pos} = {puzzle[pos[0]][int(pos[1])-1].value}")
-                result += puzzle[pos[0]][int(pos[1])-1].value
+                cell = puzzle[pos[0]][int(pos[1])-1]
+                if cell.value != 0:
+                    result += cell.value
+                elif len(cell.possibleValues) > 0:
+                    result += list(cell.possibleValues)[0]
         logging.debug(f"result: {result}")
         if result > self.right:
             return False
@@ -135,6 +140,10 @@ def convertRowToInt(row):
     return ["A", "B", "C", "D", "E", "F", "G", "H", "I"].index(row)
 
 
+def convertIntToRow(n):
+    return ["A", "B", "C", "D", "E", "F", "G", "H", "I"][n]
+
+
 def isPossiblyValid(number, position, puzzle):
     # check validity using the rules of sudoku
     row = position[0]
@@ -179,6 +188,8 @@ def isPossiblyValid(number, position, puzzle):
     if len(validCells) == 1:
         return validCells[0]
 
+    if not USE_EQUATIONS:
+        return True
     # AND check using the equations
     # EquationMap maps positions to equations.
     # E.g. B9 => (B9 + B8 + C1 + H4 + H4 = 23)
@@ -191,7 +202,7 @@ def isPossiblyValid(number, position, puzzle):
     return True
 
 
-def attemptToSolve(puzzle):
+def attemptToSolveOneValue(puzzle):
     # iterate through each cell.
     for key, row in puzzle.items():
         for i in range(len(row)):
@@ -205,20 +216,20 @@ def attemptToSolve(puzzle):
                         # if string returned then a confirmed location was found
                         puzzle[result[0]][int(result[1])].setValue(possibleValue)
                         logging.info(f"updated cell: {key}{i} with value {possibleValue}")
+                        return True
                     elif result:
                         currentCell.addPossible(possibleValue)
                     else:  # if not, remove it from potential values
                         currentCell.removePossible(possibleValue)
 
     # once done iterating through all cells, check if any cell has only one potential value
-    didUpdate = False
     for key, row in puzzle.items():
         for i, cell in enumerate(row):
             # this checks if the cell has only 1 value
             if cell.update():
-                didUpdate = True
                 logging.info(f"updated cell: {key}{i} with value {cell.value}")
-    return didUpdate
+                return True
+    return False
 
 
 def validatePuzzle(puzzle):
@@ -238,7 +249,7 @@ def solve(tempPuzzle):
         puzzle[key] = cellValues
 
     while True:
-        if attemptToSolve(puzzle):
+        if attemptToSolveOneValue(puzzle):
             continue
         else:
             break
@@ -264,23 +275,9 @@ if __name__ == "__main__":
 
         "G": [0, 0, 0,  0, 0, 0,  1, 2, 0],
         "H": [1, 0, 0,  0, 0, 2,  0, 0, 0],
-        "I": [0, 0, 0,  1, 0, 0,  0, 0, 0],
+        "I": [2, 0, 0,  1, 0, 0,  0, 0, 0],
     }
 
-    puzzle = {
-        #     0  1  2   3  4  5   6  7  8
-        "A": [0, 0, 0,  0, 0, 0,  0, 0, 1],
-        "B": [0, 1, 2,  0, 0, 0,  0, 0, 0],
-        "C": [0, 0, 0,  0, 0, 0,  2, 0, 0],
-
-        "D": [0, 0, 0,  0, 0, 0,  0, 0, 2],
-        "E": [0, 2, 0,  0, 0, 0,  0, 0, 0],
-        "F": [0, 0, 0,  0, 0, 0,  0, 0, 0],
-
-        "G": [0, 0, 0,  0, 0, 0,  1, 2, 0],
-        "H": [1, 0, 0,  0, 0, 2,  0, 0, 0],
-        "I": [0, 0, 0,  1, 0, 0,  0, 0, 0],
-    }
     for key, value in puzzle.items():
         logging.debug(f"{key}: {value}")
 
@@ -306,33 +303,23 @@ if __name__ == "__main__":
         print("\nEquation map:")
         pprint(equationMap)
 
-    puzzle2 = {
-        "A": [0, 0, 0,  0, 7, 2,  0, 0, 0],
-        "B": [6, 0, 0,  0, 3, 0,  0, 0, 0],
-        "C": [0, 2, 7,  5, 0, 9,  6, 1, 0],
-
-        "D": [1, 0, 5,  0, 6, 0,  4, 2, 0],
-        "E": [9, 0, 2,  0, 1, 5,  3, 0, 0],
-        "F": [0, 0, 0,  9, 0, 0,  0, 6, 1],
-
-        "G": [4, 0, 6,  1, 0, 0,  8, 3, 0],
-        "H": [7, 0, 0,  0, 8, 0,  1, 9, 0],
-        "I": [0, 1, 8,  0, 9, 6,  0, 4, 5],
-    }
-
-    puzzle3 = {
-        "A": [0, 5, 8,  0, 7, 0,  0, 0, 2],
-        "B": [0, 4, 0,  0, 6, 2,  0, 9, 8],
-        "C": [2, 9, 1,  0, 3, 0,  7, 0, 0],
-
-        "D": [0, 0, 6,  9, 0, 0,  4, 0, 7],
-        "E": [3, 2, 0,  6, 0, 0,  0, 1, 5],
-        "F": [0, 7, 0,  2, 5, 4,  6, 0, 3],
-
-        "G": [0, 0, 0,  8, 9, 1,  2, 0, 6],
-        "H": [0, 0, 0,  0, 2, 0,  0, 4, 0],
-        "I": [0, 0, 0,  0, 0, 0,  8, 0, 1],
-    }
-
+    temp = """
+        000004903
+        004019600
+        109086204
+        010940020
+        030602090
+        060070000
+        650001070
+        090000008
+        000000002
+    """
+    temp = [x.strip() for x in temp.splitlines() if x.strip() is not ""]
+    print(temp)
+    for i in range(9):
+        row = convertIntToRow(i)
+        tempRow = [int(x) for x in list(temp[i])]
+        puzzle[row] = tempRow
+    pprint(puzzle)
     # Solve
     solve(puzzle)
