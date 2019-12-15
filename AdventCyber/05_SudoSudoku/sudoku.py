@@ -68,7 +68,9 @@ class Equation:
             if pos == position:
                 result += value
             else:
-                result += puzzle[position[0]][int(position[1])].value
+                logging.debug(f" {pos} = {puzzle[pos[0]][int(pos[1])-1].value}")
+                result += puzzle[pos[0]][int(pos[1])-1].value
+        logging.debug(f"result: {result}")
         if result > self.right:
             return False
         return (result, self.right)
@@ -136,13 +138,13 @@ def convertRowToInt(row):
 def isPossiblyValid(number, position, puzzle):
     # check validity using the rules of sudoku
     row = position[0]
-    for cell in puzzle[row]:
-        if cell.value == number:
+    col = int(position[1])
+    for i, cell in enumerate(puzzle[row]):
+        if cell.value == number and i != col:
             return False
 
-    col = int(position[1])
     for key, cells in puzzle.items():
-        if cells[col].value == number:
+        if cells[col].value == number and key != row:
             return False
 
     # check quadrant
@@ -152,7 +154,7 @@ def isPossiblyValid(number, position, puzzle):
     rowRange = rowRanges[convertRowToInt(row) // 3]
     for row in rowRange:
         for col in colRange:
-            if puzzle[row][col].value == number:
+            if puzzle[row][col].value == number and f"{row}{col}" != position:
                 return False
 
     # check if the number is the only valid number using crosshatching
@@ -184,7 +186,7 @@ def isPossiblyValid(number, position, puzzle):
         for e in equationMap[position]:
             result = e.solve(number, position, puzzle)
             if not result:
-                logging.info(f"Value {number} at {position} failed to pass equation: {e}")
+                logging.debug(f"Result: {result}. Value {number} at {position} failed to pass equation: {e}")
                 return False
     return True
 
@@ -222,9 +224,10 @@ def attemptToSolve(puzzle):
 def validatePuzzle(puzzle):
     for key, row in puzzle.items():
         for i, cell in enumerate(row):
-            cell = row[i]
-            if not isPossiblyValid(cell.value, f"{key}{i}", puzzle):
-                logging.error(f"Incorrect value {cell.value} at {key}{i}.")
+            if cell.value == 0:
+                continue
+            elif not isPossiblyValid(cell.value, f"{key}{i}", puzzle):
+                logging.error(f" Incorrect value {cell.value} at {key}{i}.")
 
 
 def solve(tempPuzzle):
@@ -240,13 +243,30 @@ def solve(tempPuzzle):
         else:
             break
 
-    logging.info("=================================")
-    pprint(puzzle)
+    logging.info("\n=================================")
+    for key, row in puzzle.items():
+        print(f"{key}: {row}")
+    print("\n")
 
     validatePuzzle(puzzle)
 
 
 if __name__ == "__main__":
+    puzzle = {
+        #     0  1  2   3  4  5   6  7  8
+        "A": [0, 0, 0,  0, 0, 0,  0, 0, 1],
+        "B": [0, 1, 2,  0, 0, 0,  0, 0, 0],
+        "C": [0, 0, 0,  0, 0, 0,  2, 0, 0],
+
+        "D": [0, 0, 0,  0, 0, 0,  0, 0, 2],
+        "E": [0, 2, 0,  0, 0, 0,  0, 0, 0],
+        "F": [0, 0, 0,  0, 0, 0,  0, 0, 0],
+
+        "G": [0, 0, 0,  0, 0, 0,  1, 2, 0],
+        "H": [1, 0, 0,  0, 0, 2,  0, 0, 0],
+        "I": [0, 0, 0,  1, 0, 0,  0, 0, 0],
+    }
+
     puzzle = {
         #     0  1  2   3  4  5   6  7  8
         "A": [0, 0, 0,  0, 0, 0,  0, 0, 1],
