@@ -2,7 +2,7 @@
 ## Capture the Flag
 Viewing all the different cows, we find that custom_cow looks interesting because it has more inputs like `$eyes`, `$tongue`, and `$thoughts`. All variables are used in the `custom_cow` text area. Try to use a new variable like `$test` and you'll get an error message:
 
->> $ must be escaped with \ except when using $thoughts, $eyes or $tongue
+> $ must be escaped with \ except when using $thoughts, $eyes or $tongue
 
 The text area interprets some variables. This tells us that this text area is vulnerable to input.
 
@@ -53,7 +53,7 @@ HELLO_WORLD
  -----------
 ```
 
-Ok, now we know we can execute whatever we want. Try printing the directory.
+Now we know we can execute whatever we want. Try printing the directory.
 
 ```
 EOC
