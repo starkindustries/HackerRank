@@ -1,9 +1,14 @@
-from pprint import pprint as print
+from pprint import pprint
 import logging
 
 # sudoku
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
+
+
+def debug():
+    return logging.getLogger().isEnabledFor(logging.DEBUG)
+
 
 """
 Santa's little helpers are notoriously good at solving Sudoku puzzles.
@@ -78,14 +83,20 @@ class Cell:
         self.value = value
         self.possibleValues = set()
 
+    def setValue(self, value):
+        self.value = value
+        self.possibleValues = set()
+
     def update(self):
         if self.value == 0 and len(self.possibleValues) == 1:
-            print("YESSSSSSSSSSSSSS!!!!!!!!!!!!!")
-            self.value = self.possibleValues[0]
+            self.value = list(self.possibleValues)[0]
             self.possibleValues = set()
+            return True
+        return False
 
     def addPossible(self, value):
-        self.possibleValues.add(value)
+        if self.value == 0:
+            self.possibleValues.add(value)
 
     def removePossible(self, value):
         if value in self.possibleValues:
@@ -144,25 +155,41 @@ def isPossiblyValid(number, position, puzzle):
             if puzzle[row][col].value == number:
                 return False
 
-    # AND using the equations
+    # check if the number is the only valid number using crosshatching
+    validCells = []
+    for row in rowRange:
+        for col in colRange:
+            validCells.append(f"{row}{col}")
+    for row in rowRange:
+        for cell in puzzle[row]:
+            if number == cell.value:
+                validCells = [x for x in validCells if row not in x]
+    for row in puzzle:
+        for col in colRange:
+            if number == puzzle[row][col].value:
+                validCells = [x for x in validCells if str(col) not in x]
+    # also remove any cells that already contain a value
+    for cell in list(validCells):
+        value = puzzle[cell[0]][int(cell[1])].value
+        if value != 0 and value in validCells:
+            validCells.remove(cell)
+    # check if only one valid cell remains
+    if len(validCells) == 1:
+        return validCells[0]
+
+    # AND check using the equations
     # EquationMap maps positions to equations.
     # E.g. B9 => (B9 + B8 + C1 + H4 + H4 = 23)
     if position in equationMap:
-        equations = equationMap[position]
-        for e in equations:
+        for e in equationMap[position]:
             result = e.solve(number, position, puzzle)
             if not result:
+                logging.info(f"Value {number} at {position} failed to pass equation: {e}")
                 return False
     return True
 
 
-def solve(tempPuzzle, equations):
-    # convert puzzle to 2d array of cells
-    puzzle = {}
-    for key, values in tempPuzzle.items():
-        cellValues = [Cell(x) for x in values]
-        puzzle[key] = cellValues
-
+def attemptToSolve(puzzle):
     # iterate through each cell.
     for key, row in puzzle.items():
         for i in range(len(row)):
@@ -171,24 +198,57 @@ def solve(tempPuzzle, equations):
                 # for each cell, check if a number is valid.
                 for possibleValue in range(1, 10):
                     # if a number is valid, add it to potential values
-                    if isPossiblyValid(possibleValue, f"{key}{i}", puzzle):
+                    result = isPossiblyValid(possibleValue, f"{key}{i}", puzzle)
+                    if isinstance(result, str):
+                        # if string returned then a confirmed location was found
+                        puzzle[result[0]][int(result[1])].setValue(possibleValue)
+                        logging.info(f"updated cell: {key}{i} with value {possibleValue}")
+                    elif result:
                         currentCell.addPossible(possibleValue)
                     else:  # if not, remove it from potential values
                         currentCell.removePossible(possibleValue)
 
     # once done iterating through all cells, check if any cell has only one potential value
+    didUpdate = False
     for key, row in puzzle.items():
-        for cell in row:
+        for i, cell in enumerate(row):
             # this checks if the cell has only 1 value
-            cell.update()
+            if cell.update():
+                didUpdate = True
+                logging.info(f"updated cell: {key}{i} with value {cell.value}")
+    return didUpdate
 
-    print("=================================")
-    print(puzzle)
-    pass
+
+def validatePuzzle(puzzle):
+    for key, row in puzzle.items():
+        for i, cell in enumerate(row):
+            cell = row[i]
+            if not isPossiblyValid(cell.value, f"{key}{i}", puzzle):
+                logging.error(f"Incorrect value {cell.value} at {key}{i}.")
+
+
+def solve(tempPuzzle):
+    # convert puzzle to 2d array of cells
+    puzzle = {}
+    for key, values in tempPuzzle.items():
+        cellValues = [Cell(x) for x in values]
+        puzzle[key] = cellValues
+
+    while True:
+        if attemptToSolve(puzzle):
+            continue
+        else:
+            break
+
+    logging.info("=================================")
+    pprint(puzzle)
+
+    validatePuzzle(puzzle)
 
 
 if __name__ == "__main__":
     puzzle = {
+        #     0  1  2   3  4  5   6  7  8
         "A": [0, 0, 0,  0, 0, 0,  0, 0, 1],
         "B": [0, 1, 2,  0, 0, 0,  0, 0, 0],
         "C": [0, 0, 0,  0, 0, 0,  2, 0, 0],
@@ -202,7 +262,7 @@ if __name__ == "__main__":
         "I": [0, 0, 0,  1, 0, 0,  0, 0, 0],
     }
     for key, value in puzzle.items():
-        print(f"{key}: {value}")
+        logging.debug(f"{key}: {value}")
 
     rawEquations = """
     B9 + B8 + C1 + H4 + H4 = 23
@@ -222,7 +282,37 @@ if __name__ == "__main__":
     equations = []
     for e in rawEquations:
         equations.append(convertToEquation(e))
-    print(equations)
+    if debug():
+        print("\nEquation map:")
+        pprint(equationMap)
+
+    puzzle2 = {
+        "A": [0, 0, 0,  0, 7, 2,  0, 0, 0],
+        "B": [6, 0, 0,  0, 3, 0,  0, 0, 0],
+        "C": [0, 2, 7,  5, 0, 9,  6, 1, 0],
+
+        "D": [1, 0, 5,  0, 6, 0,  4, 2, 0],
+        "E": [9, 0, 2,  0, 1, 5,  3, 0, 0],
+        "F": [0, 0, 0,  9, 0, 0,  0, 6, 1],
+
+        "G": [4, 0, 6,  1, 0, 0,  8, 3, 0],
+        "H": [7, 0, 0,  0, 8, 0,  1, 9, 0],
+        "I": [0, 1, 8,  0, 9, 6,  0, 4, 5],
+    }
+
+    puzzle3 = {
+        "A": [0, 5, 8,  0, 7, 0,  0, 0, 2],
+        "B": [0, 4, 0,  0, 6, 2,  0, 9, 8],
+        "C": [2, 9, 1,  0, 3, 0,  7, 0, 0],
+
+        "D": [0, 0, 6,  9, 0, 0,  4, 0, 7],
+        "E": [3, 2, 0,  6, 0, 0,  0, 1, 5],
+        "F": [0, 7, 0,  2, 5, 4,  6, 0, 3],
+
+        "G": [0, 0, 0,  8, 9, 1,  2, 0, 6],
+        "H": [0, 0, 0,  0, 2, 0,  0, 4, 0],
+        "I": [0, 0, 0,  0, 0, 0,  8, 0, 1],
+    }
 
     # Solve
-    solve(puzzle, equations)
+    solve(puzzle)
