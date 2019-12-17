@@ -1,0 +1,130 @@
+https://qqwing.com/generate.html
+.51........9....76.....2....76.19.2....6.5.1..4........9....54...7.8.2..6..1....8
+751436982239851476864972153576319824982645317143728695398267541417583269625194738
+Number of Givens: 24
+Number of Singles: 97
+Number of Hidden Singles: 32
+Number of Naked Pairs: 2
+Number of Hidden Pairs: 0
+Number of Pointing Pairs/Triples: 1
+Number of Box/Line Intersections: 1
+Number of Guesses: 6
+Number of Backtracks: 8
+Difficulty: Expert
+
+....6.54.8....96.2........1..1.7.95..674..2.......2..61.......5794.......8....17.
+219863547875149632643725891321678954967451283458392716132987465794516328586234179
+Number of Givens: 26
+Number of Singles: 45
+Number of Hidden Singles: 9
+Number of Naked Pairs: 2
+Number of Hidden Pairs: 0
+Number of Pointing Pairs/Triples: 1
+Number of Box/Line Intersections: 0
+Number of Guesses: 1
+Number of Backtracks: 0
+Difficulty: Expert
+
+....2.59.96.........1..4.6..9........2....8.613...5...61.....385.........839..1.2
+378621594964573281251894763897162345425739816136485927619257438542318679783946152
+Number of Givens: 25
+Number of Singles: 39
+Number of Hidden Singles: 17
+Number of Naked Pairs: 2
+Number of Hidden Pairs: 0
+Number of Pointing Pairs/Triples: 0
+Number of Box/Line Intersections: 0
+Number of Guesses: 0
+Number of Backtracks: 0
+Difficulty: Intermediate
+
+3....25.9..9....2.2.5..6.4.8..4.............2.1..95..64...836..............2...85
+381742569649158723275936148863421957954367812712895436427583691538619274196274385
+Number of Givens: 24
+Number of Singles: 43
+Number of Hidden Singles: 14
+Number of Naked Pairs: 0
+Number of Hidden Pairs: 0
+Number of Pointing Pairs/Triples: 0
+Number of Box/Line Intersections: 0
+Number of Guesses: 0
+Number of Backtracks: 0
+Difficulty: Easy
+
+....2...16..843..2........3..9..627.74....6.8..37...9..24.19....1............8...
+438527961691843752572961843189356274745192638263784195324619587816475329957238416
+Number of Givens: 25
+Number of Singles: 40
+Number of Hidden Singles: 15
+Number of Naked Pairs: 2
+Number of Hidden Pairs: 1
+Number of Pointing Pairs/Triples: 3
+Number of Box/Line Intersections: 0
+Number of Guesses: 1
+Number of Backtracks: 0
+Difficulty: Expert
+
+.....865.2.........7.1.......1.8..4.7....25.8.46...3....4.........74..1......68..
+419378652238564197675129483521683749793412568846957321964831275382745916157296834
+Number of Givens: 22
+Number of Singles: 46
+Number of Hidden Singles: 13
+Number of Naked Pairs: 0
+Number of Hidden Pairs: 0
+Number of Pointing Pairs/Triples: 0
+Number of Box/Line Intersections: 0
+Number of Guesses: 0
+Number of Backtracks: 0
+Difficulty: Easy
+
+..4.5..72.......5....8..9..1.9.4576...5.1......296...8...6......41.8....7.6..4..1
+964153872823479156517826934189245763675318429432967518258691347341782695796534281
+Number of Givens: 27
+Number of Singles: 47
+Number of Hidden Singles: 7
+Number of Naked Pairs: 0
+Number of Hidden Pairs: 0
+Number of Pointing Pairs/Triples: 0
+Number of Box/Line Intersections: 0
+Number of Guesses: 0
+Number of Backtracks: 0
+Difficulty: Easy
+
+..9...8.....15....6.4.....9...46.3.8...532.16.......2.4.839.1.5.9.8..............
+579624831832159764614783259251467398987532416346918527428396175193875642765241983
+Number of Givens: 25
+Number of Singles: 41
+Number of Hidden Singles: 15
+Number of Naked Pairs: 0
+Number of Hidden Pairs: 0
+Number of Pointing Pairs/Triples: 0
+Number of Box/Line Intersections: 0
+Number of Guesses: 0
+Number of Backtracks: 0
+Difficulty: Easy
+
+..7....8.....63....9....23..76.3...2..2..4...........1...9.7.....1.267....8....64
+317295486284763519695418237176539842832174695459682371563947128941826753728351964
+Number of Givens: 23
+Number of Singles: 65
+Number of Hidden Singles: 20
+Number of Naked Pairs: 3
+Number of Hidden Pairs: 1
+Number of Pointing Pairs/Triples: 3
+Number of Box/Line Intersections: 0
+Number of Guesses: 4
+Number of Backtracks: 4
+Difficulty: Expert
+
+..9..62......49..5.............1.78.97...4..24.5......8......6..64...1..7...9.5..
+349586271627149835158723496236915784971834652485267913892451367564378129713692548
+Number of Givens: 23
+Number of Singles: 39
+Number of Hidden Singles: 19
+Number of Naked Pairs: 0
+Number of Hidden Pairs: 0
+Number of Pointing Pairs/Triples: 0
+Number of Box/Line Intersections: 0
+Number of Guesses: 0
+Number of Backtracks: 0
+Difficulty: Easy
