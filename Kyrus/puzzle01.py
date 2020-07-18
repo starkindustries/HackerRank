@@ -28,7 +28,7 @@ if __name__ == "__main__":
     #     "4ee972120bcda675f75222c87cb9d356",
     # ]
 
-    filename = 'KyrusPuzzle01_input.txt'
+    filename = 'puzzle.txt'
     lines = []
     with open(filename, 'r') as fileHandle:
         for line in fileHandle:
@@ -54,11 +54,12 @@ if __name__ == "__main__":
 
     m = hashlib.md5()
     # m.update(b"Who designed both RC5 and MD5?")
-    # m.update(b"$HEX[57686f2064657369676e656420626f74682052433520616e64204d44353f0a]")
+    m.update(b"$HEX[57686f2064657369676e656420626f74682052433520616e64204d44353f0a]")
+    m.update(b"$HEX[57686f2064657369676e656420626f74682052433520616e64204d44353f0a]")
 
     s1 = "Rivest"
     # s2 = "Who designed both RC5 and MD5?"
-    s1 = s1
-    m.update(s1.encode())
+    # s1 = s1
+    # m.update(s1.encode())
     digest = m.hexdigest()
     print(f"digest {digest} exists: {digest in lines}")
